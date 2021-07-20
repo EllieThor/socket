@@ -62,10 +62,9 @@ class Vacations extends Component {
         arr.splice(index, 1, editedOb);
         console.log("aeeeeee:", arr);
         // FIXME: לפעמים מעדכן  רק חופשה אחת רק את זו שערכנו
+        console.log("this.props.vacations: ", this.props.vacations);
         this.props.updateVacations(arr);
       }
-
-      console.log("this.props.vacations: ", this.props.vacations);
     });
 
     // FIXME: with id not work

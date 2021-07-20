@@ -125,19 +125,7 @@ class VacationsFormComp extends Component {
       let index = this.props.vacations.findIndex((vacation) => vacation.ID === vacationId);
       let arr = [...this.props.vacations];
       let vacOBJ = arr.splice(index, 1);
-      // console.log("*&&&&&&&form&&&&vacOBJ&&&&: ", vacOBJ);
-      let newOB = {};
-      // console.log(
-      //   "*&&&&&&",
-      //   // Object.values(currentObj).filter((value) => value !== undefined)
-      //   Object.values(currentObj)
-      // );
 
-      // for (let obP in currentObj) {
-      //   // console.log("obP", Object.values(obP));
-      //   if (Object.values(currentObj) !== undefined) newOB[obP] = Object.values(obP);
-      // }
-      // console.log("obPobPobPobPobPobP", newOB);
       let obj = {
         oldObj: vacOBJ,
         newDetailObj: currentObj,

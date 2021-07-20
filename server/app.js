@@ -66,7 +66,7 @@ var storage = multer.diskStorage({
   filename: function (req, file, cb) {
     let imgEnd = file.originalname.split(".");
     imgEnd = imgEnd[imgEnd.length - 1];
-    console.log("imgEnd$$: ", imgEnd);
+    console.log("imgEnd: ", imgEnd);
 
     let now = Date.now();
     console.log("hi check: ", file.originalname);
