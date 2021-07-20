@@ -57,13 +57,14 @@ class Vacations extends Component {
         console.log("propertypropertypropertyproperty", editedOb);
 
         let index = this.props.vacations.findIndex((vacation) => vacation.ID === ob.newDetailObj.ID);
-        console.log("&&&&&&&vacation&&&&& : index: ", index);
         let arr = [...this.props.vacations];
         arr.splice(index, 1, editedOb);
         console.log("aeeeeee:", arr);
-        // FIXME: לפעמים מעדכן  רק חופשה אחת רק את זו שערכנו
-        console.log("this.props.vacations: ", this.props.vacations);
-        this.props.updateVacations(arr);
+        let arr2 = [...arr];
+        console.log("arr2: ", arr2);
+        // this.aa(arr2);
+        // this.props.updateVacations(arr2);
+        // console.log(this.props.vacation);
       }
     });
 
@@ -86,6 +87,10 @@ class Vacations extends Component {
     // this.getVacationsFromDB();
   }
 
+  // aa = (ob) => {
+  //   console.log("%%%%%%%%%%%%%%%% :", ob);
+  //   // this.props.updateVacations(ob);
+  // };
   getVacationsFromDB = async () => {
     try {
       let vacations = await Api.postRequest(`/vacations/getVacationsFromDb`);
