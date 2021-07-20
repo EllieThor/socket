@@ -1,0 +1,221 @@
+/* font-family: 'Cinzel Decorative', cursive;
+font-family: 'Merienda', cursive;
+font-family: 'Noto Sans KR', sans-serif;
+font-family: 'Open Sans', sans-serif; */
+
+.logo {
+  font-family: "Cinzel Decorative", cursive;
+  /* color: white; */
+}
+
+.welcome {
+  font-family: "Merienda", cursive;
+  /* display: inline-block; */
+  /* margin-right: 600px; */
+}
+
+.isStar {
+  color: gold;
+}
+
+.graph {
+  width: 75%;
+  height: 75%;
+  margin: 0 auto;
+}
+
+.iconsColor {
+  color: rgba(0, 0, 0, 0.699);
+}
+
+.headerS {
+  /* background-color: rgba(3, 149, 165, 0.7); */
+  /* background: linear-gradient(-70deg, #024873 30%, rgba(0, 0, 0, 0) 30%), #f28963; */
+  background: linear-gradient(-70deg, #024873 20%, rgba(0, 0, 0, 0) 80%), #f28963;
+}
+
+/* @media (max-width: 1028px) {
+  #title {
+    text-align: center;
+  }
+  .title-img {
+    position: static;
+    transform: rotate(0);
+  }
+} */
+
+/* FIXME: הגובה לא שווה  */
+/* .single-card {
+  height: 400px;
+} */
+
+/* Next vacation */
+/* @media (max-width: 1028px) { */
+/* #title {
+    text-align: center;
+  }
+  .title-img {
+    position: static;
+    transform: rotate(0);
+  } */
+
+/* } */
+
+.homeTitle {
+  font-family: "Merienda", cursive;
+}
+/* .nextVacationCard { */
+/* width: 850px; */
+/* margin-left: 15rem; */
+/* } */
+.nextVacationImg {
+  width: 200px;
+  border-radius: 8px;
+  transition: 0.5s all ease-in-out;
+  margin: 0 auto;
+}
+.nextVacationDiv:hover img {
+  transform: scale(1.1);
+  transform: rotate(3deg);
+}
+
+/*Most Popular */
+.a-box {
+  display: inline-block;
+  text-align: center;
+  width: 240px;
+}
+
+.img-container {
+  border-radius: 0px 0px 20px 20px;
+  display: inline-block;
+  height: 230px;
+  overflow: hidden;
+  width: 200px;
+}
+
+.img-container img {
+  height: 250px;
+  margin: -35px 0px 0px -70px;
+  transform: skew(0deg, -13deg);
+}
+
+.inner-skew {
+  background: #c8c2c2;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0px;
+  height: 250px;
+  margin: 30px 0px 0px 0px;
+  overflow: hidden;
+  padding: 0px;
+  transform: skew(0deg, 13deg);
+  width: 200px;
+}
+
+.text-container {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  line-height: 19px;
+  margin: -120px 0px 0px 0px;
+  padding: 120px 20px 20px 20px;
+}
+
+.text-container h3 {
+  color: #04bcff;
+  font-size: 18px;
+  margin: 20px 0px 10px 0px;
+}
+
+/* Footer */
+.footer {
+  background-color: #f25e5e;
+  height: 80px;
+}
+
+.footerIcon {
+  color: white;
+  text-decoration: none;
+}
+
+.footerIcon:hover {
+  color: rgba(0, 0, 0, 0.699);
+}
+
+.a {
+  background-color: #024873;
+  border-color: rgba(2, 71, 114, 1);
+}
+.b {
+  background-color: #0396a6;
+  border-color: rgba(3, 149, 165, 1);
+}
+.c {
+  background-color: #04bfad;
+  border-color: rgba(3, 191, 172, 1);
+}
+.d {
+  background-color: #f28963;
+  border-color: rgba(242, 137, 99, 1);
+}
+.e {
+  background-color: #f25e5e;
+  border-color: rgba(242, 94, 94, 1);
+}
+/* 
+.a-box {
+  display: inline-block;
+  width: 240px;
+  text-align: center;
+     border:5px solid red
+} */
+/* 
+.img-container-green {
+  height: 230px;
+  width: 230px;
+  overflow: hidden;
+  border-radius: 0px 20px 20px 0px;
+  display: inline-block;
+     border:2px solid green;
+} */
+
+/* .img-container-green img {
+  transform: skew(13deg, 0deg);
+  height: 250px;
+  margin: -35px 0px 0px -30px;
+     border:5px solid pink;
+} */
+
+/* .inner-skew-purple {
+  display: inline-block;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 0px;
+  transform: skew(-13deg, 0deg);
+  font-size: 0px;
+  margin: 20px 0px 0px 35px;
+  background: #c8c2c2;
+  height: 210px;
+  width: 300px;
+  border: 5px solid purple;
+} */
+
+/* .text-container-orange {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+  padding: 120px 0px 20px 20px;
+  border-radius: 20px;
+  background: #fff;
+  margin: -120px -10px 0px 0px;
+  line-height: 19px;
+  font-size: 14px;
+  border: 5px solid orange;
+} */
+
+/* .text-container-orange h3 {
+  margin: 20px 0px 10px 0px;
+  color: #04bcff;
+  font-size: 18px;
+       border:5px solid brown;
+} */
