@@ -6,9 +6,13 @@ import { Bar } from "react-chartjs-2";
 
 import Footer from "../components/FooterComp";
 import Header from "../components/HeaderComp";
+import Nav from "../components/NavComp";
 
 class Reports extends Component {
   componentDidMount() {}
+  updateContent = (value) => {
+    this.props.updateContent(value);
+  };
   data = {
     labels: this.props.vacations.filter((vac) => vac.follows.length > 0).map((vacation) => vacation.Destination),
     datasets: [
@@ -50,7 +54,9 @@ class Reports extends Component {
     } else {
       return (
         <div>
-          <div>{this.props.user[0] === undefined ? "" : <Header />}</div>
+          {/* <div>{this.props.user[0] === undefined ? "" : <Header />}</div> */}
+          <div>{this.props.user[0] === undefined ? "" : <Nav user={this.props.user[0]} updateContent={this.updateContent} />}</div>
+
           <div className="mt-3 py-4 graph">{this.props.user[0] === undefined ? "" : <Bar data={this.data} options={this.options} className="graph my-4" />}</div>
           <div>{this.props.user[0] === undefined ? "" : <Footer />}</div>
         </div>

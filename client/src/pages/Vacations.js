@@ -21,6 +21,7 @@ class Vacations extends Component {
     vacationsARR: [],
   };
   componentDidMount() {
+    this.getVacationsFromDB();
     this.socket = socketIOClient(this.state.endpoint, { transports: ["websocket", "polling", "flashsocket"] });
     // this.socket = socketIOClient(this.state.endpoint);
 
@@ -30,33 +31,10 @@ class Vacations extends Component {
       console.log("this.props.vacations: ", this.props.vacations);
     });
 
-    this.socket.on("after_edit_vacation", (ob) => {
-      if (ob !== ob.newDetailObj) {
-        console.log("###vacation####: ob.newDetailObj: ", ob.newDetailObj.ID);
-        console.log("###vacation####: ob.oldObj: ", ob.oldObj);
-
-        let theOldObj = ob.oldObj[0];
-        // console.log("^^^^^^^^^^^^^^^^^^: ", theOldObj[0]);
-        let newOB = {};
-        for (let obP in ob.newDetailObj) {
-          newOB[obP] = ob.newDetailObj[obP];
-        }
-        console.log("obPobPobPobPobPobP", newOB, "6^^^^^^^6", theOldObj);
-        // let editedOb = { ...ob.oldObj, ...newOB };
-        let editedOb = Object.assign(theOldObj, newOB);
-
-        console.log("propertypropertypropertyproperty", editedOb);
-
-        let index = this.props.vacations.findIndex((vacation) => vacation.ID === ob.newDetailObj.ID);
-        let arr = [...this.props.vacations];
-        arr.splice(index, 1, editedOb);
-        console.log("aeeeeee:", arr);
-        let arr2 = [...arr];
-        console.log("arr2: ", arr2);
-        // this.aa(arr2);
-        // this.props.updateVacations(arr2);
-        // console.log(this.props.vacation);
-      }
+    this.socket.on("after_edit_vacation", (newVacationsARR) => {
+      console.log("newVacationsARR : ", newVacationsARR);
+      this.props.updateVacations(newVacationsARR);
+      console.log("this.props.vacations: ", this.props.vacations);
     });
 
     // FIXME: with id not work
@@ -74,8 +52,6 @@ class Vacations extends Component {
     //   // this.props.updateVacations(newArr);
     //   console.log("this.props.vacations: ", this.props.vacations);
     // });
-
-    // this.getVacationsFromDB();
   }
 
   getVacationsFromDB = async () => {
@@ -146,26 +122,20 @@ class Vacations extends Component {
 
   // vacation form buttons
   editVacationClicked = (vacationObj) => {
-    // this.props.updateVacationToForm({});
-    // console.log("AFTER DELETE vacationToEdit : ", this.props.vacationToEdit);
-
     // witch button
     this.props.updateVacationButtonsForm(1);
     this.imgInput = "";
+    this.vacationToEditID = vacationObj.ID;
     this.vacationDestination.value = vacationObj.Destination;
     this.vacationDescription.value = vacationObj.Description;
     this.vacationPrice.value = vacationObj.Price;
     this.vacationStartDate.value = vacationObj.StartDate;
     this.vacationEndDate.value = vacationObj.EndDate;
     this.imageNameForServer = vacationObj.ImageName;
-
-    //witch vacation edit
-    this.props.updateVacationToForm(vacationObj);
-    console.log(" vacationObj : ", vacationObj);
-    console.log("AFTER UPDATE vacationToEdit : ", this.props.vacationToEdit);
   };
 
   addVacationClicked = () => {
+    this.vacationToEditID = -1;
     this.imgInput = "";
     this.vacationDestination.value = "";
     this.vacationDescription.value = "";
@@ -175,8 +145,6 @@ class Vacations extends Component {
     this.imageNameForServer = "";
     // witch button
     this.props.updateVacationButtonsForm(0);
-    //update modal content
-    this.props.updateContent(3);
   };
   // TODO: ask before delete
   deleteVacationFromDB = async (vacationID) => {
@@ -205,6 +173,7 @@ class Vacations extends Component {
       alert("Something went wrong, please try again");
     }
   };
+
   updateContent = (value) => {
     this.props.updateContent(value);
   };
@@ -214,9 +183,7 @@ class Vacations extends Component {
   };
 
   // form vacation functionsIn
-  inputsObj = {
-    imageName: "",
-  };
+
   addVacationButton = () => {
     return (
       <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.insertVacationToDB()}>
@@ -228,7 +195,7 @@ class Vacations extends Component {
   // edit form
   saveEditedVacationButton = () => {
     return (
-      <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.updateVacationDetailsInDB(this.props.vacationToEdit.ID)}>
+      <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.updateVacationDetailsInDB()}>
         Save Changes
       </button>
     );
@@ -273,9 +240,7 @@ class Vacations extends Component {
       try {
         let vacation = await Api.postRequest("/vacations/insertVacationToDb", currentObj);
         this.getVacationsFromDB();
-        this.inputsObj = {
-          imageName: "",
-        };
+
         console.log("new vacations: ", this.props.vacations);
       } catch (err) {
         console.log("Error ", err);
@@ -284,9 +249,9 @@ class Vacations extends Component {
     }
   };
 
-  updateVacationDetailsInDB = async (vacationId) => {
+  updateVacationDetailsInDB = async () => {
     let currentObj = {
-      ID: vacationId,
+      ID: this.vacationToEditID,
       Destination: this.vacationDestination.value,
       Description: this.vacationDescription.value,
       Price: Number(this.vacationPrice.value),
@@ -294,38 +259,30 @@ class Vacations extends Component {
       StartDate: this.vacationStartDate.value,
       EndDate: this.vacationEndDate.value,
     };
-
+    console.log("currentObj^^^^^^^^^^^^^: ", currentObj);
+    // FIXME: חסר באובייקט את הפולוז ולכן יש שגיאה
     try {
       let vacation = await Api.postRequest("/vacations/updateVacationDetailsInDb", currentObj);
-      this.getVacationsFromDB();
-      let index = this.props.vacations.findIndex((vacation) => vacation.ID === vacationId);
-      let arr = [...this.props.vacations];
-      let vacOBJ = arr.splice(index, 1);
+      // this.getVacationsFromDB();
+      let index = this.props.vacations.findIndex((vacation) => vacation.ID === this.vacationToEditID);
+      // let arr = [...this.props.vacations];
+      // let vacOBJ = arr.splice(index, 1);
+      // TODO: צריך להוסיף לאובייקט את הפולוז לפני שליחה
+      this.props.vacations.splice(index, 1, currentObj);
+      // let obj = {
+      //   oldObj: vacOBJ,
+      //   newDetailObj: currentObj,
+      // };
+      console.log("*****form*******obj******: ", this.props.vacations);
 
-      let obj = {
-        oldObj: vacOBJ,
-        newDetailObj: currentObj,
-      };
-      console.log("*****form*******obj******: ", obj);
+      // this.socket.emit("edited vacation", obj);
+      this.socket.emit("edited vacation", this.props.vacations);
 
-      this.socket.emit("edited vacation", obj);
-      this.inputsObj = {
-        imageName: "",
-      };
-
-      console.log("this.inputsObj AFTER : ", this.inputsObj);
-      console.log("all vacations: ", this.props.vacations);
+      // console.log("all vacations: ", this.props.vacations);
     } catch (err) {
       console.log("Error ", err);
       alert("Something went wrong, please try again");
     }
-    this.imgInput = "";
-    this.vacationDestination.value = "";
-    this.vacationDescription.value = "";
-    this.vacationPrice.value = "";
-    this.vacationStartDate.value = "";
-    this.vacationEndDate.value = "";
-    this.imageNameForServer = "";
   };
   render() {
     if (this.props.user[0] === undefined) {

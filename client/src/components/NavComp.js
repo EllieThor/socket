@@ -2,6 +2,7 @@ import React from "react";
 import "../css/style.css";
 import { Link, Redirect } from "react-router-dom";
 import moment from "moment";
+import Modal from "./ModalComp";
 const Nav = (props) => {
   let globalObj = {
     welcomeTime: "",
@@ -105,6 +106,9 @@ const Nav = (props) => {
           </div>
         </div>
       </nav>
+      <div className="row">
+        <Modal content={props.content} />
+      </div>
     </div>
   );
 };
