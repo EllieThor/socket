@@ -4,9 +4,6 @@ import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import moment from "moment";
 import Modal from "./ModalComp";
-import ModalTRY from "./ModalTry";
-
-import * as Api from "../Api/apiCalls";
 
 class Header extends Component {
   componentDidMount() {}
@@ -20,6 +17,9 @@ class Header extends Component {
     this.props.updateVacationButtonsForm(0);
     //update modal content
     this.props.updateContent(3);
+    //witch vacation edit
+    // this.props.updateVacationToForm({});
+    // console.log("AFTER UPDATE vacationToEdit : ", this.props.vacationToEdit);
   };
 
   updateContent = (value) => {
@@ -105,7 +105,8 @@ class Header extends Component {
                   <div className="col-4">
                     {(this.props.user[0] === undefined ? "" : this.props.user[0].Role) === 1 && window.location.pathname === "/Vacations" ? (
                       <abbr title="Add New Vacation">
-                        <i className="fas fa-plus fa-2x iconsColor" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => this.addVacationClicked()}></i>
+                        {/* <i className="fas fa-plus fa-2x iconsColor" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => this.addVacationClicked()}></i> */}
+                        <i className="fas fa-plus fa-2x iconsColor" data-bs-toggle="modal" data-bs-target="#vacationModal" onClick={() => this.addVacationClicked()}></i>
                       </abbr>
                     ) : (
                       ""

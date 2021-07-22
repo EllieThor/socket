@@ -45,24 +45,19 @@ class VacationsFormComp extends Component {
   // upload image
   fileChangeEvent = (e) => {
     console.log("e.target.files: ", e.target.files);
-    this.inputsObj.filesToUpload = e.target.files;
+    this.imgInput = e.target.files;
   };
 
   uploadIMG = async () => {
-    if (this.inputsObj.filesToUpload !== undefined) {
+    if (this.imgInput !== undefined) {
       const formData = new FormData();
-      const files = this.inputsObj.filesToUpload;
+      const files = this.imgInput;
 
       for (let i = 0; i < files.length; i++) {
         formData.append("uploads[]", files[i], files[i]["name"]);
       }
-      console.log("UPLOAD! ", formData);
-      console.log("name:! ", files[0].name);
-      this.inputsObj.imageNameForServer = files[0].name;
-      let imgName = files[0].name;
-      console.log("imgName: ", imgName);
-      // this.inputsObj.imageName = imgName;
-      // console.log("this.inputsObj.imageName: ", this.inputsObj.imageName);
+
+      this.imageNameForServer = files[0].name;
       let res = await Api.postRequest("/upload", formData);
       console.log("react is IMG? ", res);
     } else {
@@ -71,14 +66,14 @@ class VacationsFormComp extends Component {
   };
 
   insertVacationToDB = async () => {
+    // `vacations`-`ID`, `Destination`, `Description`, `Price`, `ImageName`, `StartDate`, `EndDate`, `createdAt`, `updatedAt`
     let currentObj = {
-      Destination: this.inputsObj.Destination,
-      Description: this.inputsObj.Description,
-      Price: this.inputsObj.Price,
-      ImageName: this.inputsObj.imageNameForServer,
-      StartDate: this.inputsObj.StartDate,
-      EndDate: this.inputsObj.EndDate,
-      // `vacations`-`ID`, `Destination`, `Description`, `Price`, `ImageName`, `StartDate`, `EndDate`, `createdAt`, `updatedAt`
+      Destination: this.vacationDestination.value,
+      Description: this.vacationDescription.value,
+      Price: Number(this.vacationPrice.value),
+      ImageName: this.imageNameForServer,
+      StartDate: this.vacationStartDate.value,
+      EndDate: this.vacationEndDate.value,
     };
     console.log("currentObj: ", currentObj);
     if (currentObj.Destination === "" || currentObj.Description === "" || currentObj.Price <= 0 || currentObj.Price === undefined || currentObj.ImageName === undefined || currentObj.StartDate === undefined || currentObj.EndDate === undefined) {
@@ -101,17 +96,16 @@ class VacationsFormComp extends Component {
   updateVacationDetailsInDB = async (vacationId) => {
     let currentObj = {
       ID: vacationId,
-      Destination: this.inputsObj.Destination,
-      Description: this.inputsObj.Description,
-      Price: Number(this.inputsObj.Price),
-      ImageName: this.inputsObj.imageNameForServer,
-      StartDate: this.inputsObj.StartDate,
-      EndDate: this.inputsObj.EndDate,
+      Destination: this.vacationDestination.value,
+      Description: this.vacationDescription.value,
+      Price: Number(this.vacationPrice.value),
+      ImageName: this.imageNameForServer,
+      StartDate: this.vacationStartDate.value,
+      EndDate: this.vacationEndDate.value,
     };
 
     try {
       let vacation = await Api.postRequest("/vacations/updateVacationDetailsInDb", currentObj);
-      // TODO: למחוק אחרי שהסוקט עובד
       this.getVacationsFromDB();
       let index = this.props.vacations.findIndex((vacation) => vacation.ID === vacationId);
       let arr = [...this.props.vacations];
@@ -134,58 +128,30 @@ class VacationsFormComp extends Component {
       console.log("Error ", err);
       alert("Something went wrong, please try again");
     }
-  };
-
-  getVacationsFromDB = async () => {
-    try {
-      let vacations = await Api.postRequest(`/vacations/getVacationsFromDb`);
-      let allVacations = vacations.data;
-
-      // map on vacations array in order to edit follows array In each of the items
-      allVacations.map((item, i) => {
-        let followsArr = item.follows;
-        let usersIDs = [];
-        // map on followsArr array in order to convert followsArr from array of objects to arr of usersId's numbers
-        followsArr.map((id, i) => {
-          let testing = Object.values(followsArr[i]);
-          usersIDs.push(...testing);
-        });
-        item.follows = usersIDs;
-
-        // sorting
-        let isUserExist = item.follows.includes(this.props.user[0].ID);
-        if (isUserExist) {
-          allVacations.splice(i, 1);
-          allVacations.unshift(item);
-        }
-      });
-
-      // vacations array
-      this.props.updateVacations(allVacations);
-      console.log("all vacations: ", allVacations);
-    } catch (err) {
-      console.log("Error ", err);
-      alert("Something went wrong, please try again: ", err);
-    }
+    this.imgInput = "";
+    this.vacationDestination.value = "";
+    this.vacationDescription.value = "";
+    this.vacationPrice.value = "";
+    this.vacationStartDate.value = "";
+    this.vacationEndDate.value = "";
+    this.imageNameForServer = "";
   };
 
   render() {
     return (
       <div className="vacationForm">
         <h5>{this.props.vacationFormButtonsStatus === 0 ? "Add New Vacation" : "Edit vacation"}</h5>
-        <h5>destination: {this.props.vacationFormButtonsStatus === 0 ? "new vacation" : this.props.vacationToEdit.Destination}</h5>
-        {/* FIXME: input stay like the last one end not updated after change  */}
         <label htmlFor="Destination">Destination:</label>
-        <input type="text" id="Destination" className="form-control m-2" defaultValue={this.props.vacationFormButtonsStatus === 0 ? "" : this.props.vacationToEdit.Destination} placeholder="Destination" onChange={(e) => this.onChangeFN(e)} />
+        <input type="text" id="Destination" className="form-control m-2" ref={(ref) => (this.vacationDestination = ref || "")} />
         <label htmlFor="Description">Description:</label>
-        <input type="text" id="Description" className="form-control  m-2" defaultValue={this.props.vacationFormButtonsStatus === 0 ? "" : this.props.vacationToEdit.Description} placeholder="Description" onChange={(e) => this.onChangeFN(e)} />
+        <input type="text" id="Description" className="form-control  m-2" ref={(ref) => (this.vacationDescription = ref)} />
         <label htmlFor="Price">Price:</label>
-        <input type="number" id="Price" min="0" className="form-control  m-2" defaultValue={this.props.vacationFormButtonsStatus === 0 ? "" : this.props.vacationToEdit.Price} placeholder="Price" onChange={(e) => this.onChangeFN(e)} />
+        <input type="number" id="Price" min="0" className="form-control  m-2" ref={(ref) => (this.vacationPrice = ref)} />
         <label htmlFor="StartDate">StartDate:</label>
-        <input type="date" id="StartDate" className="form-control  m-2" defaultValue={this.props.vacationFormButtonsStatus === 0 ? "" : this.props.vacationToEdit.StartDate} placeholder="StartDate" onChange={(e) => this.onChangeFN(e)} />
+        <input type="date" id="StartDate" className="form-control  m-2" ref={(ref) => (this.vacationStartDate = ref)} />
         <label htmlFor="EndDate">EndDate:</label>
-        <input type="date" id="EndDate" className="form-control  m-2" defaultValue={this.props.vacationFormButtonsStatus === 0 ? "" : this.props.vacationToEdit.EndDate} placeholder="EndDate" onChange={(e) => this.onChangeFN(e)} />
-        <input type="file" id="filesToUpload" name="filesToUpload" onChange={(e) => this.fileChangeEvent(e)} />
+        <input type="date" id="EndDate" className="form-control  m-2" ref={(ref) => (this.vacationEndDate = ref)} />
+        <input type="file" id="filesToUpload" name="filesToUpload" onChange={(e) => this.fileChangeEvent(e)} ref={(ref) => (this.imgInput = ref)} />
         <button type="button" className="btn btn-dark btn-s" onClick={() => this.uploadIMG()}>
           <i className="fas fa-file-upload"></i>&nbsp;Upload
         </button>
@@ -245,5 +211,4 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(VacationsFormComp);

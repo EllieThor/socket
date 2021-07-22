@@ -29,5 +29,4 @@ const Modal = (props) => {
     </div>
   );
 };
-// ReactDOM.render(<Modal />, document.getElementById("root"));
 export default Modal;
