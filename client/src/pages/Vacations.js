@@ -132,6 +132,7 @@ class Vacations extends Component {
     this.vacationStartDate.value = vacationObj.StartDate;
     this.vacationEndDate.value = vacationObj.EndDate;
     this.imageNameForServer = vacationObj.ImageName;
+    this.vacationStars = vacationObj.follows;
   };
 
   addVacationClicked = () => {
@@ -259,23 +260,21 @@ class Vacations extends Component {
       StartDate: this.vacationStartDate.value,
       EndDate: this.vacationEndDate.value,
     };
-    console.log("currentObj^^^^^^^^^^^^^: ", currentObj);
-    // FIXME: חסר באובייקט את הפולוז ולכן יש שגיאה
+    console.log("currentObj: ", currentObj);
     try {
       let vacation = await Api.postRequest("/vacations/updateVacationDetailsInDb", currentObj);
       // this.getVacationsFromDB();
       let index = this.props.vacations.findIndex((vacation) => vacation.ID === this.vacationToEditID);
-      // let arr = [...this.props.vacations];
-      // let vacOBJ = arr.splice(index, 1);
-      // TODO: צריך להוסיף לאובייקט את הפולוז לפני שליחה
-      this.props.vacations.splice(index, 1, currentObj);
-      // let obj = {
-      //   oldObj: vacOBJ,
-      //   newDetailObj: currentObj,
-      // };
-      console.log("*****form*******obj******: ", this.props.vacations);
+      // add vacations follows to newOB
+      let newOB = {};
+      newOB = currentObj;
+      newOB.follows = this.vacationStars;
 
-      // this.socket.emit("edited vacation", obj);
+      console.log("newOB: ", newOB);
+
+      this.props.vacations.splice(index, 1, newOB);
+      // console.log("*****form*******obj******: ", this.props.vacations);
+
       this.socket.emit("edited vacation", this.props.vacations);
 
       // console.log("all vacations: ", this.props.vacations);
