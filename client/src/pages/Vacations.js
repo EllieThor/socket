@@ -4,13 +4,9 @@ import { connect } from "react-redux";
 import * as Api from "../Api/apiCalls";
 import { Redirect } from "react-router-dom";
 
-import Header from "../components/HeaderComp";
 import Nav from "../components/NavComp";
 import SingleVacationCard from "../components/SingleVacCardCopm";
 import Footer from "../components/FooterComp";
-import Modal from "../components/ModalComp";
-
-import VacationComp from "../components/FormVacationComp";
 
 import socketIOClient from "socket.io-client";
 
@@ -31,11 +27,28 @@ class Vacations extends Component {
       console.log("this.props.vacations: ", this.props.vacations);
     });
 
-    this.socket.on("after_edit_vacation", (newVacationsARR) => {
-      console.log("newVacationsARR : ", newVacationsARR);
-      this.props.updateVacations(newVacationsARR);
-      console.log("this.props.vacations: ", this.props.vacations);
+    // this.socket.on("after_edit_vacation", (newVacationsARR) => {
+    //   console.log("newVacationsARR : ", newVacationsARR);
+    //   this.props.updateVacations(newVacationsARR);
+    //   console.log("this.props.vacations: ", this.props.vacations);
+    // });
+
+    this.socket.on("after_edit_vacation", () => {
+      this.getVacationsFromDB();
     });
+
+    // this.socket.on("after_edit_vacation", (fn) => {
+    //   return this.getVacationsFromDB;
+    // });
+
+    // this.socket.on("after_edit_vacation", (obj) => {
+    //   console.log("obj : ", obj);
+    //   let index = this.props.vacations.findIndex((vacation) => vacation.ID === obj.ID);
+    //   let arr = [...this.props.vacations];
+    //   arr.splice(index, 1, obj);
+    //   this.props.updateVacations(arr);
+    //   console.log("this.props.vacations: ", this.props.vacations);
+    // });
 
     // FIXME: with id not work
     // this.socket.on("id to delete", (vacationID) => {
@@ -126,13 +139,13 @@ class Vacations extends Component {
     this.props.updateVacationButtonsForm(1);
     this.imgInput = "";
     this.vacationToEditID = vacationObj.ID;
+    this.vacationStars = vacationObj.follows;
     this.vacationDestination.value = vacationObj.Destination;
     this.vacationDescription.value = vacationObj.Description;
     this.vacationPrice.value = vacationObj.Price;
     this.vacationStartDate.value = vacationObj.StartDate;
     this.vacationEndDate.value = vacationObj.EndDate;
     this.imageNameForServer = vacationObj.ImageName;
-    this.vacationStars = vacationObj.follows;
   };
 
   addVacationClicked = () => {
@@ -183,24 +196,6 @@ class Vacations extends Component {
     this.props.updateUser([]);
   };
 
-  // form vacation functionsIn
-
-  addVacationButton = () => {
-    return (
-      <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.insertVacationToDB()}>
-        Add vacation
-      </button>
-    );
-  };
-
-  // edit form
-  saveEditedVacationButton = () => {
-    return (
-      <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.updateVacationDetailsInDB()}>
-        Save Changes
-      </button>
-    );
-  };
   // upload image
   fileChangeEvent = (e) => {
     console.log("e.target.files: ", e.target.files);
@@ -269,15 +264,14 @@ class Vacations extends Component {
       let newOB = {};
       newOB = currentObj;
       newOB.follows = this.vacationStars;
-
       console.log("newOB: ", newOB);
 
       this.props.vacations.splice(index, 1, newOB);
-      // console.log("*****form*******obj******: ", this.props.vacations);
-
       this.socket.emit("edited vacation", this.props.vacations);
-
-      // console.log("all vacations: ", this.props.vacations);
+      console.log("all vacations: ", this.props.vacations);
+      // FIXME: האינדקס פה הוא לא לפי מה שכל יוזר עשה ולכן צריך להעביר רק את האובייקט אבל אז זה גוזר את כל המערך
+      this.socket.emit("edited vacation", newOB);
+      // this.socket.emit("edited vacation");
     } catch (err) {
       console.log("Error ", err);
       alert("Something went wrong, please try again");
@@ -289,7 +283,6 @@ class Vacations extends Component {
     } else {
       return (
         <div>
-          {/* <div>{this.props.user[0] === undefined ? "" : <Header />}</div> */}
           <div>{this.props.user[0] === undefined ? "" : <Nav user={this.props.user[0]} addVacationClicked={this.addVacationClicked} logOutIconClicked={this.logOutIconClicked} updateContent={this.updateContent} />}</div>
 
           <div className="container">
@@ -324,7 +317,15 @@ class Vacations extends Component {
                       <button type="button" className="btn btn-dark btn-s" onClick={() => this.uploadIMG()}>
                         <i className="fas fa-file-upload"></i>&nbsp;Upload
                       </button>
-                      {this.props.vacationFormButtonsStatus === 0 ? this.addVacationButton() : this.saveEditedVacationButton()}
+                      {this.props.vacationFormButtonsStatus === 0 ? (
+                        <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.insertVacationToDB()}>
+                          Add vacation
+                        </button>
+                      ) : (
+                        <button type="submit" className="btn btn-dark mt-3" data-bs-dismiss="modal" onClick={() => this.updateVacationDetailsInDB()}>
+                          Save Changes
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="modal-footer">

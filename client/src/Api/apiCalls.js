@@ -1,6 +1,7 @@
 import axios from "axios";
 
 let GlobalURL = "http://www.localhost:5004";
+// let GlobalServerURL = "https://404040.co.il/fullstack/EllieThor/vacations_stars/server/uploads/paris.png";
 
 export function postRequest(url, ob) {
   return new Promise(async (resolve, reject) => {
