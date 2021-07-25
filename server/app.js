@@ -105,14 +105,14 @@ io.on("connection", (socket) => {
   //   io.sockets.emit("changed_color", color);
   // });
 
-  // socket.on("edited vacation", (obj) => {
-  //   // console.log(" vacationsARR: ", vacationsARR);
-  //   io.sockets.emit("after_edit_vacation", obj);
-  // });
-
-  socket.on("edited vacation", () => {
-    io.sockets.emit("after_edit_vacation");
+  socket.on("edited vacation", (followsArr) => {
+    console.log(" followsArr in server : ", followsArr);
+    io.sockets.emit("after_edit_vacation", followsArr);
   });
+
+  // socket.on("edited vacation", () => {
+  //   io.sockets.emit("after_edit_vacation");
+  // });
 
   socket.on("delete vacation", (vacationsARR) => {
     // console.log(" vacationsARR: ", vacationsARR);

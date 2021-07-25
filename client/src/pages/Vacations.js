@@ -33,8 +33,15 @@ class Vacations extends Component {
     //   console.log("this.props.vacations: ", this.props.vacations);
     // });
 
-    this.socket.on("after_edit_vacation", () => {
-      this.getVacationsFromDB();
+    this.socket.on("after_edit_vacation", (followsArr) => {
+      console.log("followsArr on client get: ", followsArr);
+      if (this.props.user[0] === undefined) {
+        console.log("user id is undefined");
+      } else {
+        console.log("on client get this.props.user[0].ID: ", this.props.user[0].ID);
+        let vacationUsersStars = followsArr.includes(this.props.user[0].ID);
+        if (this.props.user[0].Role === 1 || vacationUsersStars) this.getVacationsFromDB();
+      }
     });
 
     // this.socket.on("after_edit_vacation", (fn) => {
@@ -47,22 +54,6 @@ class Vacations extends Component {
     //   let arr = [...this.props.vacations];
     //   arr.splice(index, 1, obj);
     //   this.props.updateVacations(arr);
-    //   console.log("this.props.vacations: ", this.props.vacations);
-    // });
-
-    // FIXME: with id not work
-    // this.socket.on("id to delete", (vacationID) => {
-    //   // let index = this.props.vacations.findIndex((vacation) => vacation.ID === vacationID);
-    //   // let arrARR = [...this.props.vacations];
-    //   // arrARR.splice(index, 1);
-    //   //  [...this.props.vacations.splice(index, 1)];
-    //   let index = this.props.vacations.findIndex((vac) => vac.ID === vacationID);
-    //   console.log("index!!!!: ", index);
-    //   let newArr = [...this.props.vacations];
-    //   newArr.splice(index, 1);
-    //   console.log("newArr: ", newArr);
-
-    //   // this.props.updateVacations(newArr);
     //   console.log("this.props.vacations: ", this.props.vacations);
     // });
   }
@@ -259,19 +250,20 @@ class Vacations extends Component {
     try {
       let vacation = await Api.postRequest("/vacations/updateVacationDetailsInDb", currentObj);
       // this.getVacationsFromDB();
-      let index = this.props.vacations.findIndex((vacation) => vacation.ID === this.vacationToEditID);
-      // add vacations follows to newOB
-      let newOB = {};
-      newOB = currentObj;
-      newOB.follows = this.vacationStars;
-      console.log("newOB: ", newOB);
+      // let index = this.props.vacations.findIndex((vacation) => vacation.ID === this.vacationToEditID);
+      // // add vacations follows to newOB
+      // let newOB = {};
+      // newOB = currentObj;
+      // newOB.follows = this.vacationStars;
+      // console.log("newOB: ", newOB);
 
-      this.props.vacations.splice(index, 1, newOB);
-      this.socket.emit("edited vacation", this.props.vacations);
-      console.log("all vacations: ", this.props.vacations);
+      // this.props.vacations.splice(index, 1, newOB);
+      // this.socket.emit("edited vacation", this.props.vacations);
       // FIXME: האינדקס פה הוא לא לפי מה שכל יוזר עשה ולכן צריך להעביר רק את האובייקט אבל אז זה גוזר את כל המערך
-      this.socket.emit("edited vacation", newOB);
+      // this.socket.emit("edited vacation", newOB);
       // this.socket.emit("edited vacation");
+      this.socket.emit("edited vacation", this.vacationStars);
+      console.log("all vacations on client send: ", this.vacationStars);
     } catch (err) {
       console.log("Error ", err);
       alert("Something went wrong, please try again");
