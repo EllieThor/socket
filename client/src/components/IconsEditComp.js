@@ -6,7 +6,7 @@ const EditIcons = (props) => {
       <div className="col-6">
         <abbr title="Edit Vacation">
           {/* <i className="fas fa-pen fa-lg" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => props.editVacationClicked(props.vacationToEdit)}></i> */}
-          <i className="fas fa-pen fa-lg" data-bs-toggle="modal" data-bs-target="#vacationModal" onClick={() => props.editVacationClicked(props.vacationToEdit)}></i>
+          <i className="fas fa-pen fa-lg" data-bs-toggle="modal" data-bs-target="#vacationModal" onClick={() => props.openModalEdit(props.vacationToEdit)}></i>
         </abbr>
       </div>
       <div className="col-6">

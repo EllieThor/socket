@@ -125,31 +125,31 @@ class Vacations extends Component {
   // `vacations`-`ID`, `Destination`, `Description`, `Price`, `ImageName`, `StartDate`, `EndDate`, `createdAt`, `updatedAt`
 
   // vacation form buttons
-  editVacationClicked = (vacationObj) => {
-    // witch button
+  openModalEdit = (vacationObj) => {
+    // witch button for form add-0 edit-1
     this.props.updateVacationButtonsForm(1);
-    this.imgInput = "";
+    this.imgInput = null;
     this.vacationToEditID = vacationObj.ID;
-    this.vacationStars = vacationObj.follows;
     this.vacationDestination.value = vacationObj.Destination;
     this.vacationDescription.value = vacationObj.Description;
     this.vacationPrice.value = vacationObj.Price;
     this.vacationStartDate.value = vacationObj.StartDate;
     this.vacationEndDate.value = vacationObj.EndDate;
     this.imageNameForServer = vacationObj.ImageName;
+    this.vacationStars = vacationObj.follows;
   };
 
   addVacationClicked = () => {
+    // witch button for form add-0 edit-1
+    this.props.updateVacationButtonsForm(0);
+    this.imgInput = null;
     this.vacationToEditID = -1;
-    this.imgInput = "";
     this.vacationDestination.value = "";
     this.vacationDescription.value = "";
     this.vacationPrice.value = "";
     this.vacationStartDate.value = "";
     this.vacationEndDate.value = "";
     this.imageNameForServer = "";
-    // witch button
-    this.props.updateVacationButtonsForm(0);
   };
   // TODO: ask before delete
   deleteVacationFromDB = async (vacationID) => {
@@ -263,7 +263,7 @@ class Vacations extends Component {
       // this.socket.emit("edited vacation", newOB);
       // this.socket.emit("edited vacation");
       this.socket.emit("edited vacation", this.vacationStars);
-      console.log("all vacations on client send: ", this.vacationStars);
+      console.log("all stars on client send: ", this.vacationStars);
     } catch (err) {
       console.log("Error ", err);
       alert("Something went wrong, please try again");
@@ -278,7 +278,7 @@ class Vacations extends Component {
           <div>{this.props.user[0] === undefined ? "" : <Nav user={this.props.user[0]} addVacationClicked={this.addVacationClicked} logOutIconClicked={this.logOutIconClicked} updateContent={this.updateContent} />}</div>
 
           <div className="container">
-            <div className="row mt-3">{this.props.user[0] === undefined ? "" : <SingleVacationCard user={this.props.user[0]} vacations={this.props.vacations} insertStarToDB={this.insertStarToDB} deleteStarFromDB={this.deleteStarFromDB} deleteVacationFromDB={this.deleteVacationFromDB} editVacationClicked={this.editVacationClicked} />}</div>
+            <div className="row mt-3">{this.props.user[0] === undefined ? "" : <SingleVacationCard user={this.props.user[0]} vacations={this.props.vacations} insertStarToDB={this.insertStarToDB} deleteStarFromDB={this.deleteStarFromDB} deleteVacationFromDB={this.deleteVacationFromDB} openModalEdit={this.openModalEdit} />}</div>
           </div>
           <div className="footer">{this.props.user[0] === undefined ? "" : <Footer />}</div>
 
